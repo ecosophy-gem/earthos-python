@@ -1,9 +1,13 @@
 import math
 import requests
+import os
 from datetime import datetime
 
 from .eoformula import EOFormula, EOVar, EOOffset
 from .eoimage import EOData, EOColorScale, COLORSCALES
+
+EARTHOS_ENGINE_HOST = os.environ.get('EARTHOS_ENGINE_HOST', 'https://engine.earthos.ai')
+EARTHOS_APIKEY = os.environ.get('EARTHOS_APIKEY', None)
 
 def num2deg(xtile, ytile, zoom):
     n = 1 << zoom
@@ -23,12 +27,16 @@ class EarthOSAPIError(Exception):
         return f"{self.message} ({self.response.status_code}): {self.response.text}"
 
 class EarthOS:
-    def __init__(self, api_key):
+    def __init__(self, api_key=EARTHOS_APIKEY):
+        if not api_key:
+            raise ValueError("API key is required. Provide it as a parameter or set the EARTHOS_APIKEY environment variable.")
+        if not EARTHOS_ENGINE_HOST:
+            raise ValueError("EARTHOS_ENGINE_HOST environment variable is required.")
         self.api_key = api_key
         self._varcache = None
 
     def _get(self, path, params={}, **kwargs):
-        url = f'https://engine.earthos.ai/{path}'
+        url = f'{EARTHOS_ENGINE_HOST}/{path}'
         headers = {
             'Authorization': f'Bearer {self.api_key}',
         }
@@ -40,7 +48,7 @@ class EarthOS:
         return response
     
     def _post(self, path, data, **kwargs):
-        url = f'https://engine.earthos.ai/{path}'
+        url = f'{EARTHOS_ENGINE_HOST}/{path}'
         headers = {
             'Authorization': f'Bearer {self.api_key}',
         }
@@ -87,21 +95,26 @@ class EarthOS:
         vars = self.get_variables()
         return EOVar(name, info=vars.get(name, None))
 
-    def get_point(self, lat, lon, timestamp, formula):
+    def get_point(self, lat, lon, alt, time, formula):
         if isinstance(formula, EOFormula):
             formula = str(formula)
 
         format = 'json'
 
         params = {
-            'time': self._normalize_timestamp(timestamp),
+            'time': self._normalize_timestamp(time),
             'formula': formula,
             'format': format,
             'latitude': lat,
             'longitude': lon,
+            'altitude': alt,
         }
 
         response = self._get('point/', params)
+        return response.json()
+
+    def get_points(self, query):
+        response = self._post('points/', query)
         return response.json()
 
     def get_tile(self, x, y, z, timestamp, formula):

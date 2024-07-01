@@ -11,9 +11,21 @@ class EOData:
         self._height = 0
         self._original_format = 'unknown'
 
-    def save(self, path):
-        with open(path, 'wb') as f:
-            f.write(self._data)
+    def save(self, path, colorscale=None):
+        if colorscale:
+            from PIL import Image
+            from io import BytesIO
+
+            image = Image.new('RGB', (self._width, self._height))
+            for y in range(self._height):
+                for x in range(self._width):
+                    value = self._data[y * self._width + x]
+                    color = colorscale.get_color(value)
+                    image.putpixel((x, y), color)
+            image.save(path)
+        else:
+            with open(path, 'wb') as f:
+                f.write(self._data)
 
     def show(self, colorscale):
         from PIL import Image
