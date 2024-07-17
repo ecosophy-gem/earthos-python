@@ -1,4 +1,4 @@
-from earthos import EarthOS, EOColorScale, COLORSCALES, EOVar
+from earthos import EarthOS, EOColorScale, COLOR_SCALES, EOVar
 import os
 
 APIKEY = os.environ.get('EARTHOS_APIKEY', None)
@@ -17,3 +17,12 @@ def test_variable():
     assert(var._name == 'relative_humidity')
     assert(type(var._info) == dict)
     assert(var._info["source_type"] == "SPATIOTEMPORAL")
+
+def test_variable_split():
+    var = eo.get_variable_namespaced('gfs', 'relative_humidity')
+    assert(type(var) == EOVar)
+    assert(var._namespace == 'gfs')
+    assert(var._name == 'relative_humidity')
+    assert(type(var._info) == dict)
+    assert(var._info["source_type"] == "SPATIOTEMPORAL")
+    

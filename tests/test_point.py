@@ -1,4 +1,4 @@
-from earthos import EarthOS, EOColorScale, COLORSCALES, EOVar
+from earthos import EarthOS, normalize_timestamp
 import os
 from datetime import datetime
 
@@ -63,3 +63,22 @@ def test_points():
             })
 
     eo.get_points(query)
+
+
+def test_timestamp_normalization():
+    assert(normalize_timestamp('2024-06-24T16:30:00Z') == 1719246600)
+    assert(normalize_timestamp('2024-06-24T16:30:00') == 1719246600)
+    assert(normalize_timestamp('2024-06-24T16:30') == 1719246600)
+    assert(normalize_timestamp('2024-06-24') == 1719187200)
+    assert(normalize_timestamp(1719246600) == 1719246600)
+    assert(normalize_timestamp('1719246600') == 1719246600)
+    assert(normalize_timestamp('1719246600.0') == 1719246600)
+    assert(normalize_timestamp(1719246600.0) == 1719246600)
+    assert(normalize_timestamp(1719246600.0) == 1719246600)
+    assert(normalize_timestamp(1719206400) == 1719206400)
+    assert(normalize_timestamp('1719206400') == 1719206400)
+    assert(normalize_timestamp('1719206400.0') == 1719206400)
+    assert(normalize_timestamp(1719206400.0) == 1719206400)
+    assert(normalize_timestamp(1719206400.0) == 1719206400)
+
+

@@ -1,5 +1,5 @@
 from datetime import datetime
-from earthos import EarthOS, EOColorScale, COLORSCALES, EOVar
+from earthos import EarthOS, EOVar, EOFormula
 
 def test_formula():
     # Just convert air temperature from Celsius to Farenheit
@@ -19,3 +19,16 @@ def test_formula_offset():
     airtemp_diff = airtemp_now - airtemp_past
     assert(str(airtemp_diff) == '(gfs.air_temperature - gfs.air_temperature[time: -86400])')
 
+def test_formula_conversions():
+    test = EOVar('gfs.air_temperature') + 5
+    assert(test.to_string() == '(gfs.air_temperature + 5)')
+    assert((test - 5).to_string() == '((gfs.air_temperature + 5) - 5)')
+    assert((test * 5).to_string() == '((gfs.air_temperature + 5) * 5)')
+    assert((test / 5).to_string() == '((gfs.air_temperature + 5) / 5)')
+    assert((test ** 5).to_string() == '((gfs.air_temperature + 5) ^ 5)')
+    assert((5 + test).to_string() == '(5 + (gfs.air_temperature + 5))')
+    assert((5 - test).to_string() == '(5 - (gfs.air_temperature + 5))')
+    assert((5 * test).to_string() == '(5 * (gfs.air_temperature + 5))')
+    assert((5 / test).to_string() == '(5 / (gfs.air_temperature + 5))')
+    assert((5 ** test).to_string() == '(5 ^ (gfs.air_temperature + 5))')
+    assert((test + test).to_string() == '((gfs.air_temperature + 5) + (gfs.air_temperature + 5))')
