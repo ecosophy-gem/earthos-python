@@ -1,13 +1,19 @@
 
 
 class EOFormula:
+    """
+    This class represents a formula that can be used to query the EarthOS API.
+    It provides pythonic operators for building the formula, and should be
+    used in conjunction with EOVar and EOFunc objects to build the formula.
+    """
+
     def __init__(self, left, operator, right):
         self._left = left
         self._operator = operator
         self._right = right
     
     def __str__(self) -> str:
-        return '(' + str(self._left) + ' ' + self._operator + ' ' + str(self._right) + ')'
+        return f"({self._left!s} {self._operator!s} {self._right!s})"
 
     def to_string(self) -> str:
         return str(self)
@@ -129,3 +135,58 @@ class EOVar:
         for key, value in kwargs.items():
             self._offset[key] = value
         return self
+
+
+class EOFunc:
+    """
+    This class represents a function that can be used when querying the EarthOS API.
+    """
+    def __init__(self, name, *args):
+        self._name = name
+        self._args = args
+
+    def __str__(self) -> str:
+        s = self._name + '('
+        cnt = len(self._args)
+        cur = 0
+        for arg in self._args:
+            cur += 1
+            s += str(arg)
+            if cur < cnt:
+                s += ','
+        s += ')'
+        return s
+
+    def to_string(self) -> str:
+        return str(self)
+
+    def __add__(self, other):
+        return EOFormula(self, '+', other)
+    
+    def __radd__(self, other):
+        return EOFormula(other, '+', self)
+    
+    def __sub__(self, other):
+        return EOFormula(self, '-', other)
+    
+    def __rsub__(self, other):
+        return EOFormula(other, '-', self)
+    
+    def __mul__(self, other):
+        return EOFormula(self, '*', other)
+    
+    def __rmul__(self, other):
+        return EOFormula(other, '*', self)
+    
+    def __truediv__(self, other):
+        return EOFormula(self, '/', other)
+    
+    def __rtruediv__(self, other):
+        return EOFormula(other, '/', self)
+
+    def __pow__(self, other):
+        return EOFormula(self, '^', other)
+
+    def __rpow__(self, other):
+        return EOFormula(other, '^', self)
+
