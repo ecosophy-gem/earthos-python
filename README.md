@@ -13,7 +13,7 @@ Before you can use these API bindings, ensure you have:
 
 Try:
 ```python
-pip install earthos-python
+pip install earthos
 ```
 
 Or, if you have cloned this from a git repository, you can also:

@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "earthos"
+version = "0.1.2"
+description = "Ecosophy EarthOS API bindings"
+long_description_content_type = "text/markdown"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = ["Ecosophy"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "Topic :: Scientific/Engineering :: Oceanography",
+]
+
+dependencies = [
+    "requests",
+    "Pillow",
+    "numpy",
+]
+
+[project.optional-dependencies]
+dev = ["check-manifest"]
+test = ["pytest", "coverage"]
+
+
+[project.urls]
+"Repository" = "https://github.com/ecosophy-gem/earthos-python"
+"Documentation" = "https://docs.ecosophy.is"
+"Company" = "https://ecosophy.is"
+
