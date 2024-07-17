@@ -6,8 +6,8 @@ in order to use the bindings.
 ## Prerequisites
 
 Before you can use these API bindings, ensure you have:
- * Python 3.9 or later
- * An active EarthOS account
+ * Python 3.9 or later.
+ * An active EarthOS account with API access.
 
 ## Installation
 
